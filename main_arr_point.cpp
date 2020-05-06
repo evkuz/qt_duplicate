@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
         //read rest of file
         rest_of_file = fsize - j;
       //  qDebug() <<  "rest of file is" << rest_of_file;
-        num = mfile.read(reinterpret_cast<char*>(mybuffer), rest_of_file); //rest_of_file
+        mfile.read(reinterpret_cast<char*>(mybuffer), rest_of_file); //rest_of_file
         //Вот после этого у нас offset сдвигается в конец файла. И у нас уже случилось mfile.atEnd() == true
         i=0;
          while (i<=rest_of_file/4){ //#2
@@ -79,7 +79,8 @@ int main(int argc, char *argv[])
              //  if (mybuffer.at(i)==sample) {
                  ba = QByteArray(reinterpret_cast<char*>(&fdata), 4);
                  qDebug() <<  "Found duplicate value   " << ba.toHex().toUpper();// << "next offset value is " << (i+1)*4; duplicate = true; break;
-                 qDebug() <<  "1st occurence offset is " << j-4  << "next offset value is " << j+ i*4; duplicate = true; break;
+                 qDebug() <<  "1st occurrence offset is " << j-4  << "next occurrence offset is " << j+ i*4; duplicate = true; //break;
+                 num++;
              }
                 // qDebug() <<  "1st occurence offset is " << j*4 << "next offset value is " << (i+1)*4; duplicate = true; break;}
              i++;
@@ -93,7 +94,7 @@ int main(int argc, char *argv[])
 
     }//while  (!mfile.atEnd()) #1
 mfile.close();
-if (duplicate) {qDebug() <<  "There was duplicate dword value in a file";}
+if (duplicate) {qDebug() <<  "There were" << num << "duplicate dword values in a file";}
 else {qDebug() <<  "There was no ANY duplicate dwords in a file";}
 return 0;
 //    return a.exec();
