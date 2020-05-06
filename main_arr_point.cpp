@@ -16,8 +16,8 @@ void File_Open(QString filename);
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    QString str, fname, fstr, fstr_repaired;
-    QFile mfile, repaired_file;
+    QString fname;
+    QFile mfile;
     QByteArray ba;
     quint64 i, j, fsize;
     //,  data, fsize, bytes_to_write, result;
@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
    //QStringList file_list;
     quint64 rest_of_file;
 
+
     bool duplicate;
     //, End_Of_File_Flag;
 
@@ -39,13 +40,16 @@ int main(int argc, char *argv[])
     //End_Of_File_Flag = true;
     duplicate = false;
 
+
     fname = def_file;
     qDebug() << "Start checking file consistency ";
     mfile.setFileName(fname);
     fsize = mfile.size();
+    mybuffer = new quint32[fsize];
+
     //mybuffer.resize(fsize);
     if (!mfile.open(QIODevice::ReadOnly )) { qDebug() <<  "The file " <<  mfile.fileName() << " does not exist !";  return 0;}
-    qDebug() << "Current file name is " << mfile.fileName();
+    qDebug() << "Current file name is " << mfile.fileName() << "and size of " << fsize << " bytes";
 
 
     j =0; num=0;
@@ -64,7 +68,7 @@ int main(int argc, char *argv[])
         //read rest of file
         rest_of_file = fsize - j;
       //  qDebug() <<  "rest of file is" << rest_of_file;
-        num = mfile.read(reinterpret_cast<char*>(&mybuffer), 400); //rest_of_file
+        num = mfile.read(reinterpret_cast<char*>(mybuffer), rest_of_file); //rest_of_file
         //Вот после этого у нас offset сдвигается в конец файла. И у нас уже случилось mfile.atEnd() == true
         i=0;
          while (i<=rest_of_file/4){ //#2
