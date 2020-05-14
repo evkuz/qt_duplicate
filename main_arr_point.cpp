@@ -9,7 +9,8 @@
 #include <QVector>
 
 
-#define def_file "/home/evkuz/asm/matrix_mul/rnd_data.bin"
+//#define def_file "/home/evkuz/asm/matrix_mul/rnd_data.bin"
+#define def_file "rnd_data.bin"
 
 void File_Open(QString filename);
 
@@ -20,24 +21,14 @@ int main(int argc, char *argv[])
     QFile mfile;
     QByteArray ba;
     quint64 i, j, fsize;
-    //,  data, fsize, bytes_to_write, result;
-    //uchar num;
-    //char fdata;
-    //char cbuf[4];
     quint32 fdata, sample, num;
     //quint32  mybuffer[400];
     //QVector<quint32> mybuffer;
     quint32 * mybuffer;
-   //QStringList file_list;
     quint64 rest_of_file;
 
 
     bool duplicate;
-    //, End_Of_File_Flag;
-
-   // char  dataSet[8] ; //= new char[8];
-
-    //End_Of_File_Flag = true;
     duplicate = false;
 
 
@@ -46,8 +37,6 @@ int main(int argc, char *argv[])
     mfile.setFileName(fname);
     fsize = mfile.size();
     mybuffer = new quint32[fsize];
-
-    //mybuffer.resize(fsize);
     if (!mfile.open(QIODevice::ReadOnly )) { qDebug() <<  "The file " <<  mfile.fileName() << " does not exist !";  return 0;}
     qDebug() << "Current file name is " << mfile.fileName() << "and size of " << fsize << " bytes";
 
@@ -67,7 +56,6 @@ int main(int argc, char *argv[])
         if (!mfile.seek(j)){qDebug() <<  "Seek operation ERROR in string, " << "J value is " << j;break;}
         //read rest of file
         rest_of_file = fsize - j;
-      //  qDebug() <<  "rest of file is" << rest_of_file;
         mfile.read(reinterpret_cast<char*>(mybuffer), rest_of_file); //rest_of_file
         //Вот после этого у нас offset сдвигается в конец файла. И у нас уже случилось mfile.atEnd() == true
         i=0;
@@ -76,13 +64,11 @@ int main(int argc, char *argv[])
             // fdata = mybuffer.at(i);
              // we have quint32 array, so increment index by 1, not by 4
              if ( *(mybuffer+i)==sample) {
-             //  if (mybuffer.at(i)==sample) {
                  ba = QByteArray(reinterpret_cast<char*>(&fdata), 4);
                  qDebug() <<  "Found duplicate value   " << ba.toHex().toUpper();// << "next offset value is " << (i+1)*4; duplicate = true; break;
                  qDebug() <<  "1st occurrence offset is " << j-4  << "next occurrence offset is " << j+ i*4; duplicate = true; //break;
                  num++;
              }
-                // qDebug() <<  "1st occurence offset is " << j*4 << "next offset value is " << (i+1)*4; duplicate = true; break;}
              i++;
              if (j >= (fsize - 3)) {break;}
 
